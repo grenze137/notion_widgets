@@ -16,12 +16,23 @@
       justify-content: center;
       align-items: center;
       background-color: transparent;
+      overflow: hidden;
+    }
+    .container {
+      position: relative;
+      width: 90%;
+      height: 90%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
 
     img {
-      max-width: 90%;
-      max-height: 90%;
-      transition: opacity 0.4s ease-in-out;
+      position: absolute;
+      max-width: 100%;
+      max-height: 100%;
+      transition: transform 0.4s ease-in-out;
     }
 
     button {
@@ -47,7 +58,11 @@
 
 <body>
   <button id="changeBackground"></button>
-  <img id="galleryImage" src="" alt="Gallery Image">
+  <div class="container">
+    <img id="galleryImage1" src="" alt="Gallery Image 1">
+    <img id="galleryImage2" src="" alt="Gallery Image 2">
+  </div>
+
 
   <script>
     // Setup
@@ -56,7 +71,8 @@
 
     const images = Array.from({ length: totalImages }, (_, i) => `photos/${i + 1}.jpg`);
     const button = document.getElementById("changeBackground");
-    const imgElement = document.getElementById("galleryImage");
+    const img1 = document.getElementById("galleryImage1");
+    const img2 = document.getElementById("galleryImage2");
 
     // Preload images
     images.forEach(src => {
@@ -65,14 +81,23 @@
     });
 
     let intervalId;
+    let currentIndex = 0;
+    let nextIndex = 1;
+    let activeImage = 1; // Track which image is currently active
 
     const setRandomImage = () => {
       const randomIndex = Math.floor(Math.random() * images.length);
-      imgElement.style.opacity = 0; // Start fade out
+      const nextImg = activeImage === 1 ? img2 : img1;
+      const currentImg = activeImage === 1 ? img1 : img2;
+      
+      nextImg.src = images[randomIndex];
+      nextImg.style.transform = 'translateX(0%)'; // Start next image off-screen to the right
+
       setTimeout(() => {
-        imgElement.src = images[randomIndex];
-        imgElement.style.opacity = 1; // Start fade in
-      }, 400); // Match this with the CSS transition duration
+        currentImg.style.transform = 'translateX(150%)'; // Move current image off-screen to the left
+        nextImg.style.transform = 'translateX(0)'; // Move next image into view
+        activeImage = activeImage === 1 ? 2 : 1; // Switch active image
+      }, 20); // Timeout to ensure the initial transform takes effect
     };
 
     const restartInterval = () => {
@@ -86,6 +111,8 @@
     button.addEventListener("click", restartInterval);
 
     // Set initial random image and start the interval
+    img1.src = images[currentIndex];
+    img1.style.transform = 'translateX(0)'; // Ensure the initial image is in view
     restartInterval();
   </script>
 </body>
