@@ -28,7 +28,11 @@
 <body>
   <button id="changeBackground">Change Background</button>
   <script>
+
+    //setup---
     const totalImages = 15; // Set this to the total number of images you have
+    const change_interval = 10000; // Set this to intervals for changing photos
+    //setup---
     const images = Array.from({ length: totalImages }, (_, i) => `photos/${i + 1}.jpg`);
     const button = document.getElementById("changeBackground");
 
@@ -41,6 +45,8 @@
 
     // Set initial random background
     setRandomBackground();
+
+    setInterval(setRandomBackground, change_interval);
   </script>
 </body>
 </html>
