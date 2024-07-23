@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Photo Gallery</title>
+
   <style>
     body {
       margin: 0;
@@ -12,15 +15,19 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-size: cover;
-      background-position: center;
+      background-color: transparent;
+    }
+
+    img {
+      max-width: 90%;
+      max-height: 90%;
       transition: opacity 0.4s ease-in-out;
     }
+
     button {
       position: absolute;
       bottom: 1rem;
       left: 1rem;
-
       border: 2px solid #e5ebf3;
       background-color: transparent;
       color: #e5ebf3;
@@ -28,36 +35,59 @@
       padding: 10px 10px;
       border-radius: 100%;
       outline: none;
+      font-size: 1.2rem;
     }
 
     button:hover {
-  background-color: #e5ebf3;
-  color: #362a2b;
-}
+      background-color: #e5ebf3;
+      color: #362a2b;
+    }
   </style>
 </head>
+
 <body>
   <button id="changeBackground"></button>
-  <script>
+  <img id="galleryImage" src="" alt="Gallery Image">
 
-    //setup---
+  <script>
+    // Setup
     const totalImages = 15; // Set this to the total number of images you have
-    const change_interval = 10000; // Set this to intervals for changing photos
-    //setup---
+    const changeInterval = 10000; // Set this to intervals for changing photos
+
     const images = Array.from({ length: totalImages }, (_, i) => `photos/${i + 1}.jpg`);
     const button = document.getElementById("changeBackground");
+    const imgElement = document.getElementById("galleryImage");
 
-    const setRandomBackground = () => {
+    // Preload images
+    images.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+
+    let intervalId;
+
+    const setRandomImage = () => {
       const randomIndex = Math.floor(Math.random() * images.length);
-      document.body.style.backgroundImage = `url(${images[randomIndex]})`;
+      imgElement.style.opacity = 0; // Start fade out
+      setTimeout(() => {
+        imgElement.src = images[randomIndex];
+        imgElement.style.opacity = 1; // Start fade in
+      }, 400); // Match this with the CSS transition duration
     };
 
-    button.addEventListener("click", setRandomBackground);
+    const restartInterval = () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+      setRandomImage(); // Change image immediately on button click
+      intervalId = setInterval(setRandomImage, changeInterval);
+    };
 
-    // Set initial random background
-    setRandomBackground();
+    button.addEventListener("click", restartInterval);
 
-    setInterval(setRandomBackground, change_interval);
+    // Set initial random image and start the interval
+    restartInterval();
   </script>
 </body>
+
 </html>
