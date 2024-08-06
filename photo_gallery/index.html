@@ -15,9 +15,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: transparent;
       overflow: hidden;
+      background-color: transparent;
     }
+
     .container {
       position: relative;
       width: 90%;
@@ -30,9 +31,41 @@
 
     img {
       position: absolute;
-      max-width: 100%;
-      max-height: 100%;
-      transition: transform 0.4s ease-in-out;
+      max-width: 95%;
+      max-height: 95%;
+      transition: transform 0.8s ease-in-out;
+      padding: 10px;
+      border-radius: 10%;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .slide-in {
+      animation: slideIn 0.8s ease-in-out;
+    }
+
+    .slide-out {
+      animation: slideOut 0.8s ease-in-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-130%);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(130%);
+      }
     }
 
     button {
@@ -43,77 +76,104 @@
       background-color: transparent;
       color: #e5ebf3;
       cursor: pointer;
-      padding: 10px 10px;
-      border-radius: 100%;
+      padding: 10px;
+      border-radius: 50%;
       outline: none;
-      font-size: 1.2rem;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     button:hover {
-      background-color: #e5ebf3;
+      background-color: #afb6c0;
       color: #362a2b;
     }
+
   </style>
 </head>
 
 <body>
   <button id="changeBackground"></button>
   <div class="container">
-    <img id="galleryImage1" src="" alt="Gallery Image 1">
-    <img id="galleryImage2" src="" alt="Gallery Image 2">
+    <img id="galleryImage1" src="" alt="Gallery Image 1" class="hidden">
+    <img id="galleryImage2" src="" alt="Gallery Image 2" class="hidden">
   </div>
 
-
   <script>
-    // Setup
-    const totalImages = 15; // Set this to the total number of images you have
-    const changeInterval = 10000; // Set this to intervals for changing photos
+    const totalImages = 15;
+    const changeInterval = 10000;
+    const animationDuration = 800; // Animation duration in milliseconds
 
     const images = Array.from({ length: totalImages }, (_, i) => `photos/${i + 1}.jpg`);
     const button = document.getElementById("changeBackground");
     const img1 = document.getElementById("galleryImage1");
     const img2 = document.getElementById("galleryImage2");
 
-    // Preload images
-    images.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-
+    let currentImageIndex = -1;
     let intervalId;
-    let currentIndex = 0;
-    let nextIndex = 1;
-    let activeImage = 1; // Track which image is currently active
 
-    const setRandomImage = () => {
-      const randomIndex = Math.floor(Math.random() * images.length);
-      const nextImg = activeImage === 1 ? img2 : img1;
-      const currentImg = activeImage === 1 ? img1 : img2;
-      
-      nextImg.src = images[randomIndex];
-      nextImg.style.transform = 'translateX(0%)'; // Start next image off-screen to the right
+    const getNextImageIndex = () => {
+      let nextIndex;
+      do {
+        nextIndex = Math.floor(Math.random() * images.length);
+      } while (nextIndex === currentImageIndex);
+      return nextIndex;
+    };
 
+    const loadImage = (imgElement, src) => {
+      return new Promise((resolve) => {
+        imgElement.src = src;
+        imgElement.onload = () => resolve();
+      });
+    };
+
+    const switchImage = async () => {
+      const currentImage = currentImageIndex % 2 === 0 ? img1 : img2;
+      const nextImage = currentImageIndex % 2 === 0 ? img2 : img1;
+
+      // Load new image
+      const nextImageIndex = getNextImageIndex();
+      const nextImageSrc = images[nextImageIndex];
+      await loadImage(nextImage, nextImageSrc);
+
+      // Ensure animations are reset
+      currentImage.classList.remove('slide-in', 'slide-out', 'visible');
+      nextImage.classList.remove('slide-in', 'slide-out', 'hidden');
+
+      // Force reflow to ensure animation
+      nextImage.offsetHeight; // trigger reflow
+
+      // Show the next image
+      nextImage.classList.add('visible');
+      nextImage.classList.add('slide-in');
+
+      // Animate the current image out
+      currentImage.classList.add('slide-out');
       setTimeout(() => {
-        currentImg.style.transform = 'translateX(150%)'; // Move current image off-screen to the left
-        nextImg.style.transform = 'translateX(0)'; // Move next image into view
-        activeImage = activeImage === 1 ? 2 : 1; // Switch active image
-      }, 20); // Timeout to ensure the initial transform takes effect
+        currentImage.classList.add('hidden');
+        currentImage.classList.remove('slide-out');
+        currentImageIndex = nextImageIndex;
+      }, animationDuration);
     };
 
     const restartInterval = () => {
       if (intervalId) {
         clearInterval(intervalId);
       }
-      setRandomImage(); // Change image immediately on button click
-      intervalId = setInterval(setRandomImage, changeInterval);
+      switchImage();
+      intervalId = setInterval(switchImage, changeInterval);
     };
 
     button.addEventListener("click", restartInterval);
 
-    // Set initial random image and start the interval
-    img1.src = images[currentIndex];
-    img1.style.transform = 'translateX(0)'; // Ensure the initial image is in view
-    restartInterval();
+    // Initial setup: Load first image and start interval
+    (async () => {
+      currentImageIndex = getNextImageIndex();
+      await loadImage(img1, images[currentImageIndex]);
+      img1.classList.remove('hidden');
+      restartInterval();
+    })();
   </script>
 </body>
 
