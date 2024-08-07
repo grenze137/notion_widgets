@@ -21,26 +21,29 @@
 
     .container {
       position: relative;
-      width: 80vmin; /* Make the container a square */
+      width: 80vmin; 
       height: 80vmin;
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      cursor: pointer; 
     }
 
     img {
       position: absolute;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Ensure the image covers the container */
+      object-fit: cover; 
       transition: transform 0.8s ease-in-out;
-      padding: 10px;
       border-radius: 10%;
     }
 
     .hidden {
       display: none;
+    }
+    .visible {
+      display: block;
     }
 
     .slide-in {
@@ -69,45 +72,24 @@
       }
     }
 
-    button {
-      position: absolute;
-      bottom: 1rem;
-      left: 1rem;
-      border: 2px solid #e5ebf3;
-      background-color: transparent;
-      color: #e5ebf3;
-      cursor: pointer;
-      padding: 10px;
-      border-radius: 50%;
-      outline: none;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    button:hover {
-      background-color: #afb6c0;
-      color: #362a2b;
-    }
-
   </style>
 </head>
 
 <body>
-  <button id="changeBackground"></button>
-  <div class="container">
+  <div class="container" id="galleryContainer">
     <img id="galleryImage1" src="" alt="Gallery Image 1" class="hidden">
     <img id="galleryImage2" src="" alt="Gallery Image 2" class="hidden">
   </div>
 
   <script>
-    const totalImages = 15;
-    const changeInterval = 10000;
-    const animationDuration = 800; // Animation duration in milliseconds
+    //setup
+    const totalImages = 15; //Number of images
+    const changeInterval = 10000; //Time before automaticly changing photo
+    const animationDuration = 800; //Animation duration in milliseconds
+    //setup
 
     const images = Array.from({ length: totalImages }, (_, i) => `photos/${i + 1}.jpg`);
-    const button = document.getElementById("changeBackground");
+    const container = document.getElementById("galleryContainer");
     const img1 = document.getElementById("galleryImage1");
     const img2 = document.getElementById("galleryImage2");
 
@@ -166,7 +148,7 @@
       intervalId = setInterval(switchImage, changeInterval);
     };
 
-    button.addEventListener("click", restartInterval);
+    container.addEventListener("click", restartInterval);
 
     // Initial setup: Load first image and start interval
     (async () => {
