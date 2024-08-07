@@ -7,13 +7,6 @@
   <title>Photo Gallery</title>
 
   <style>
-    :root {
-      --animation-duration: 0.8s;
-      --image-border-radius: 10%;
-      --slide-in-distance: -130%;
-      --slide-out-distance: 130%;
-    }
-
     body {
       margin: 0;
       padding: 0;
@@ -28,8 +21,8 @@
 
     .container {
       position: relative;
-      width: 100vmin; 
-      height: 100vmin;
+      width: 95vmin; 
+      height: 95vmin;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -42,31 +35,28 @@
       width: 100%;
       height: 100%;
       object-fit: cover; 
-      transition: opacity var(--animation-duration) ease-in-out;
-      border-radius: var(--image-border-radius);
+      transition: transform 0.8s ease-in-out;
+      border-radius: 10%;
     }
 
     .hidden {
-      opacity: 0;
-      visibility: hidden;
+      display: none;
     }
-    
     .visible {
-      opacity: 1;
-      visibility: visible;
+      display: block;
     }
 
     .slide-in {
-      animation: slideIn var(--animation-duration) ease-in-out;
+      animation: slideIn 0.8s ease-in-out;
     }
 
     .slide-out {
-      animation: slideOut var(--animation-duration) ease-in-out;
+      animation: slideOut 0.8s ease-in-out;
     }
 
     @keyframes slideIn {
       from {
-        transform: translateX(var(--slide-in-distance));
+        transform: translateX(-130%);
       }
       to {
         transform: translateX(0);
@@ -78,9 +68,10 @@
         transform: translateX(0);
       }
       to {
-        transform: translateX(var(--slide-out-distance));
+        transform: translateX(130%);
       }
     }
+
   </style>
 </head>
 
@@ -91,9 +82,11 @@
   </div>
 
   <script>
-    const totalImages = 15;
-    const changeInterval = 10000;
-    const animationDuration = 800;
+    //setup
+    const totalImages = 62; //Number of images
+    const changeInterval = 15000; //Time before automaticly changing photo
+    const animationDuration = 800; //Animation duration in milliseconds
+    //setup
 
     const images = Array.from({ length: totalImages }, (_, i) => `photos/${i + 1}.jpg`);
     const container = document.getElementById("galleryContainer");
@@ -119,23 +112,24 @@
     };
 
     const switchImage = async () => {
-      const [currentImage, nextImage] = (currentImageIndex % 2 === 0) ? [img1, img2] : [img2, img1];
+      const currentImage = currentImageIndex % 2 === 0 ? img1 : img2;
+      const nextImage = currentImageIndex % 2 === 0 ? img2 : img1;
 
       // Load new image
       const nextImageIndex = getNextImageIndex();
       const nextImageSrc = images[nextImageIndex];
       await loadImage(nextImage, nextImageSrc);
 
-      // Reset and prepare animations
+      // Ensure animations are reset
       currentImage.classList.remove('slide-in', 'slide-out', 'visible');
       nextImage.classList.remove('slide-in', 'slide-out', 'hidden');
 
-      // Ensure next image starts hidden
-      nextImage.classList.add('hidden');
-      requestAnimationFrame(() => {
-        nextImage.classList.remove('hidden');
-        nextImage.classList.add('visible', 'slide-in');
-      });
+      // Force reflow to ensure animation
+      nextImage.offsetHeight; // trigger reflow
+
+      // Show the next image
+      nextImage.classList.add('visible');
+      nextImage.classList.add('slide-in');
 
       // Animate the current image out
       currentImage.classList.add('slide-out');
@@ -156,6 +150,7 @@
 
     container.addEventListener("click", restartInterval);
 
+    // Initial setup: Load first image and start interval
     (async () => {
       currentImageIndex = getNextImageIndex();
       await loadImage(img1, images[currentImageIndex]);
