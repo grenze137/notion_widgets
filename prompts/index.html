@@ -27,9 +27,8 @@
         }
 
         #author {
-            position: absolute;
-            right: 40px;
-            bottom: 40px;
+            margin-top: 40px; 
+            text-align: right; 
             color: white;
             font-size: 1em;
         }
@@ -83,8 +82,8 @@
         function setRandomBackgroundAndPrompt() {
             // Random choice of the quote
             const randomIndex = Math.floor(Math.random() * prompts.length);
-            const randomPrompt = prompts[randomIndex].quote;
-            const randomAuthor = prompts[randomIndex].author;
+            const randomPrompt = `"${prompts[randomIndex].quote}"`;
+            const randomAuthor = `- ${prompts[randomIndex].author}`;
             
             document.getElementById("prompt").innerText = randomPrompt;
             document.getElementById("author").innerText = randomAuthor;
