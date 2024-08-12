@@ -12,30 +12,18 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: serif, sans-serif;
             overflow: hidden; 
             cursor: pointer; 
         }
 
-        #background {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-        }
-
         #prompt {
-            position: absolute;
-            font-size: 2em;
+            position: relative;
+            background-position: center;
+            font-size: 1.5em;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
             text-align: center;
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
         }
     </style>
@@ -50,7 +38,8 @@
         // Seznam promptů
         const prompts = [
             "The only way to deal with an unfree world, is to become so absolutely free that your very existence is an act of REBELLION.",
-            "Everything we call real is made of things that cannot be regarded as real. If quantum mechanics hasn't profoundly shocked you, you haven't understood it yet.",
+            "Everything we call real is made of things that cannot be regarded as real." ,
+            "If quantum mechanics hasn't profoundly shocked you, you haven't understood it yet.",
             "Do you think the moon exists when no one’s looking?",
             "Shut up and calculate!",
             "To die will be an awfully big adventure.",
@@ -68,30 +57,37 @@
             "To invent, you need a good imagination and a pile of junk.",
             "Just because something doesn't do what you planned, doesn't mean it's useless.",
             "Sleep is like a drug. Take too much at a time and it makes you dopey. You lose time and opportunities.",
-            "Failure is success in progress",
-            "artificial intellegance is no match for natural stupidity"
-
+            "Failure is success in progress"
         ];
 
 
         let changeInterval;
 
-        function setRandomBackgroundAndPrompt() {
-            // Náhodný výběr promptu ze seznamu
-            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-
-            // Nastavení pozadí a promptu na stránce
-            document.getElementById("prompt").innerText = randomPrompt;
-
-            // Resetování a restartování intervalového časovače
-            clearInterval(changeInterval);
-            changeInterval = setInterval(setRandomBackgroundAndPrompt, 600000);
+        // Generating random color for text shadow
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
 
-        // Nastavit pozadí a prompt při načtení stránky
-        setRandomBackgroundAndPrompt();
+        function setRandomBackgroundAndPrompt() {
+            // Random choice of the quote
+            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            document.getElementById("prompt").innerText = randomPrompt;
 
-        // Změnit pozadí a prompt při kliknutí na obrazovku
+            // Random choice of color
+            const randomColor = getRandomColor();
+            document.getElementById("prompt").style.textShadow = `2px 2px 4px ${randomColor}`;
+            
+            // Reseting time interval
+            clearInterval(changeInterval);
+            changeInterval = setInterval(setRandomBackgroundAndPrompt, 300000);
+        }
+
+        setRandomBackgroundAndPrompt();
         document.body.addEventListener('click', setRandomBackgroundAndPrompt);
     </script>
 </body>
