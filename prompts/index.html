@@ -4,39 +4,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompts Generator</title>
+    <title>Quote Generator</title>
     <style>
         body {
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: top;
             height: 100vh;
             margin: 0;
             font-family: serif, sans-serif;
             overflow: hidden; 
             cursor: pointer; 
             position: relative;
+            padding: 30px;
+            box-sizing: border-box;
+
         }
 
-        #prompt {
-            font-size: 1.5em;
+        #container {
             text-align: center;
+            max-width: 100%;
+            position: relative;
+        }
+
+        #prompt, #author {
+            font-size: 1.5em;
             color: white;
-            margin-top: 40px;
             border-radius: 20px;
+            display: inline-block;
+            margin: 0;
+            padding: 10px; 
+            box-sizing: border-box; 
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
         }
 
         #author {
-            margin-top: 40px; 
-            text-align: right; 
-            color: white;
+            text-align: right;
             font-size: 1em;
+            white-space: nowrap; 
+            display: block; 
+        }
+
+        .fade-in {
+            opacity: 1 !important; 
         }
     </style>
 </head>
 
 <body>
-    <div id="background">
+    <div id="container">
         <div id="prompt"></div>
         <div id="author"></div>
     </div>
@@ -66,10 +83,8 @@
             { quote: "Failure is success in progress", author: "Albert Einstein" }
         ];
 
-
         let changeInterval;
 
-        // Generating random color for text shadow
         function getRandomColor() {
             const letters = '0123456789ABCDEF';
             let color = '#';
@@ -80,20 +95,32 @@
         }
 
         function setRandomBackgroundAndPrompt() {
-            // Random choice of the quote
-            const randomIndex = Math.floor(Math.random() * prompts.length);
-            const randomPrompt = `"${prompts[randomIndex].quote}"`;
-            const randomAuthor = `- ${prompts[randomIndex].author}`;
-            
-            document.getElementById("prompt").innerText = randomPrompt;
-            document.getElementById("author").innerText = randomAuthor;
+            const promptElement = document.getElementById("prompt");
+            const authorElement = document.getElementById("author");
 
-            // Random choice of color
-            const randomColor = getRandomColor();
-            document.getElementById("prompt").style.textShadow = `2px 2px 4px ${randomColor}`;
-            document.getElementById("author").style.textShadow = `2px 2px 4px ${randomColor}`;
+            // Start the fade-out animation
+            promptElement.classList.remove("fade-in");
+            authorElement.classList.remove("fade-in");
 
-            // Reseting time interval
+            // Wait for the fade-out animation to complete before updating text
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * prompts.length);
+                const randomPrompt = `"${prompts[randomIndex].quote}"`;
+                const randomAuthor = `- ${prompts[randomIndex].author}`;
+
+                promptElement.innerText = randomPrompt;
+                authorElement.innerText = randomAuthor;
+
+                const randomColor = getRandomColor();
+                promptElement.style.textShadow = `2px 2px 4px ${randomColor}`;
+                authorElement.style.textShadow = `2px 2px 4px ${randomColor}`;
+
+                // Start the fade-in animation
+                promptElement.classList.add("fade-in");
+                authorElement.classList.add("fade-in");
+            }, 1000); // Timeout should match the duration of the fade-out animation
+
+            // Resetting time interval
             clearInterval(changeInterval);
             changeInterval = setInterval(setRandomBackgroundAndPrompt, 300000);
         }
