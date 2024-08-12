@@ -49,21 +49,30 @@
     <script>
         // Seznam promptů
         const prompts = [
-            "Believe in yourself!",
-            "Carpe diem!",
-            "Never stop learning!",
-            "Stay positive, work hard, make it happen!",
-            "The best time for new beginnings is now!"
+            "The only way to deal with an unfree world, is to become so absolutely free that your very existence is an act of REBELLION.",
+            "Everything we call real is made of things that cannot be regarded as real. If quantum mechanics hasn't profoundly shocked you, you haven't understood it yet.",
+            "Do you think the moon exists when no one’s looking?",
+            "Shut up and calculate!",
+            "To die will be an awfully big adventure.",
+            "All the world is made of faith, and trust, and pixie dust.",
+            "Never say goodbye because goodbye means going away and going away means forgetting.",
+            "Second star to the right and straight on 'til morning.",
+            "To live will be an awfully big adventure.",
+            "Never is an awfully long time.",
+            "All children, except one, grow up.",
+            "Stars are beautiful, but they may not take part in anything, they must just look on forever.",
+            "I suppose it's like the ticking crocodile, isn't it? Time is chasing after all of us.",
+            "Would you like an adventure now, or would like to have your tea first?",
+            "I have not failed. I've just found 10,000 ways that won't work.",
+            "We often miss opportunity because it's dressed in overalls and looks like work",
+            "To invent, you need a good imagination and a pile of junk.",
+            "Just because something doesn't do what you planned, doesn't mean it's useless.",
+            "Sleep is like a drug. Take too much at a time and it makes you dopey. You lose time and opportunities.",
+            "Failure is success in progress",
+            "artificial intellegance is no match for natural stupidity"
+
         ];
 
-        // Seznam obrázků v adresáři "backgrounds"
-        const backgrounds = [
-            "backgrounds/1.jpg",
-            "backgrounds/2.jpg",
-            "backgrounds/3.jpg",
-            "backgrounds/4.jpg",
-            "backgrounds/5.jpg",
-        ];
 
         let changeInterval;
 
@@ -71,11 +80,7 @@
             // Náhodný výběr promptu ze seznamu
             const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
 
-            // Náhodný výběr obrázku ze seznamu
-            const randomBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-
             // Nastavení pozadí a promptu na stránce
-            document.getElementById("background").style.backgroundImage = `url(${randomBackground})`;
             document.getElementById("prompt").innerText = randomPrompt;
 
             // Resetování a restartování intervalového časovače
