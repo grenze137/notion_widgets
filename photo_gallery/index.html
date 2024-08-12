@@ -88,7 +88,7 @@
     const animationDuration = 800; //Animation duration in milliseconds
     //setup
 
-    const images = Array.from({ length: totalImages }, (_, i) => `photos/${i + 1}.jpg`);
+    const images = Array.from({ length: totalImages }, (_, i) => `photos/${i + 1}.jpg?timestamp=${new Date().getTime()}`);
     const container = document.getElementById("galleryContainer");
     const img1 = document.getElementById("galleryImage1");
     const img2 = document.getElementById("galleryImage2");
